@@ -6,7 +6,22 @@ import { v } from "convex/values";
 // app will continue to work.
 // The schema provides more precise TypeScript types.
 export default defineSchema({
-  numbers: defineTable({
-    value: v.number(),
+  house: defineTable({
+    name: v.string(),
+    description: v.string(),
+    totalPoints: v.number(),
   }),
+  action: defineTable({
+    house: v.id("house"),
+    user: v.string(), // from better auth
+    place: v.union(
+      v.literal("1st"),
+      v.literal("2nd"),
+      v.literal("3rd"),
+      v.literal("4th"),
+    ),
+    event: v.string(),
+    points: v.number(),
+    createdAt: v.number(),
+  }).index("by_house", ["house"]),
 });
