@@ -26,7 +26,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Row = {
   place: string;
@@ -113,43 +120,48 @@ function CardTable({
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor={`place-${title}`}>Place</Label>
-                <Input
-                  id={`place-${title}`}
+              <Field>
+                <FieldLabel>Place</FieldLabel>
+                <Select
                   value={newRow.place}
-                  onChange={(e) =>
-                    setNewRow({ ...newRow, place: e.target.value })
+                  onValueChange={(value) =>
+                    setNewRow({ ...newRow, place: value })
                   }
-                  placeholder="e.g., 4th"
-                />
-              </div>
-              <div>
-                <Label htmlFor={`person-${title}`}>Person</Label>
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select place" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1st">1st</SelectItem>
+                    <SelectItem value="2nd">2nd</SelectItem>
+                    <SelectItem value="3rd">3rd</SelectItem>
+                    <SelectItem value="4th">4th</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel>Person</FieldLabel>
                 <Input
-                  id={`person-${title}`}
                   value={newRow.person}
                   onChange={(e) =>
                     setNewRow({ ...newRow, person: e.target.value })
                   }
                   placeholder="Person name"
                 />
-              </div>
-              <div>
-                <Label htmlFor={`event-${title}`}>Event</Label>
+              </Field>
+              <Field>
+                <FieldLabel>Event</FieldLabel>
                 <Input
-                  id={`event-${title}`}
                   value={newRow.event}
                   onChange={(e) =>
                     setNewRow({ ...newRow, event: e.target.value })
                   }
                   placeholder="Event name"
                 />
-              </div>
-              <div>
-                <Label htmlFor={`points-${title}`}>Points</Label>
+              </Field>
+              <Field>
+                <FieldLabel>Points</FieldLabel>
                 <Input
-                  id={`points-${title}`}
                   type="number"
                   value={newRow.points}
                   onChange={(e) =>
@@ -157,7 +169,7 @@ function CardTable({
                   }
                   placeholder="Points"
                 />
-              </div>
+              </Field>
               <Button type="submit">Add Row</Button>
             </form>
           </DialogContent>
@@ -275,7 +287,7 @@ export default function AdminPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-      <div className="flex flex-col lg:flex-row gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <CardTable
           title="Card 1"
           description="Description for Card 1"
