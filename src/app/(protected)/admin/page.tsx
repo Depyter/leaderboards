@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery, usePaginatedQuery, useMutation } from "convex/react";
+import { api } from "@convex/_generated/api";
+import { Id } from "@convex/_generated/dataModel";
 import {
   Card,
   CardContent,
@@ -35,44 +38,54 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Row = {
-  place: string;
-  person: string;
-  event: string;
-  points: number;
-};
-
-type NewRow = {
-  place: string;
-  person: string;
-  event: string;
-  points: string;
-};
-
 interface CardTableProps {
+  houseId: Id<"house">;
   title: string;
   description: string;
-  data: Row[];
-  setData: React.Dispatch<React.SetStateAction<Row[]>>;
-  newRow: NewRow;
-  setNewRow: React.Dispatch<React.SetStateAction<NewRow>>;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   total: number;
+  addScore: ReturnType<typeof useMutation<typeof api.ranking.addScore>>;
 }
 
 function CardTable({
+  houseId,
   title,
   description,
-  data,
-  newRow,
-  setNewRow,
-  handleSubmit,
-  open,
-  setOpen,
   total,
+  addScore,
 }: CardTableProps) {
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.ranking.getPaginatedActionsByHouse,
+    { houseId },
+    { initialNumItems: 5 },
+  );
+
+  const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newRow, setNewRow] = useState({
+    place: "",
+    event: "",
+    points: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (newRow.place && newRow.event && newRow.points) {
+      setIsSubmitting(true);
+      try {
+        await addScore({
+          house: houseId,
+          place: newRow.place as "1st" | "2nd" | "3rd" | "4th",
+          event: newRow.event,
+          points: parseInt(newRow.points) || 0,
+        });
+        setNewRow({ place: "", event: "", points: "" });
+        setOpen(false);
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
   return (
     <Card className="flex-1">
       <CardHeader className="flex justify-between items-start">
@@ -91,22 +104,27 @@ function CardTable({
             <TableHeader>
               <TableRow>
                 <TableHead>Place</TableHead>
-                <TableHead>Person</TableHead>
+                <TableHead>User</TableHead>
                 <TableHead>Event</TableHead>
                 <TableHead>Points</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((row, index) => (
+              {results.map((action, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.place}</TableCell>
-                  <TableCell>{row.person}</TableCell>
-                  <TableCell>{row.event}</TableCell>
-                  <TableCell>{row.points}</TableCell>
+                  <TableCell>{action.place}</TableCell>
+                  <TableCell>{action.user}</TableCell>
+                  <TableCell>{action.event}</TableCell>
+                  <TableCell>{action.points}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          {status === "CanLoadMore" && (
+            <Button onClick={() => loadMore(10)} className="mt-2">
+              Load More
+            </Button>
+          )}
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -139,16 +157,7 @@ function CardTable({
                   </SelectContent>
                 </Select>
               </Field>
-              <Field>
-                <FieldLabel>Person</FieldLabel>
-                <Input
-                  value={newRow.person}
-                  onChange={(e) =>
-                    setNewRow({ ...newRow, person: e.target.value })
-                  }
-                  placeholder="Person name"
-                />
-              </Field>
+
               <Field>
                 <FieldLabel>Event</FieldLabel>
                 <Input
@@ -170,7 +179,9 @@ function CardTable({
                   placeholder="Points"
                 />
               </Field>
-              <Button type="submit">Add Row</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Adding..." : "Add Row"}
+              </Button>
             </form>
           </DialogContent>
         </Dialog>
@@ -180,162 +191,27 @@ function CardTable({
 }
 
 export default function AdminPage() {
-  const [card1Data, setCard1Data] = useState<Row[]>([
-    { place: "1st", person: "John Doe", event: "Meeting", points: 10 },
-    { place: "2nd", person: "Jane Smith", event: "Workshop", points: 15 },
-    { place: "3rd", person: "Bob Johnson", event: "Conference", points: 20 },
-  ]);
-  const [card2Data, setCard2Data] = useState<Row[]>([
-    { place: "1st", person: "Alice Brown", event: "Seminar", points: 12 },
-    { place: "2nd", person: "Charlie Wilson", event: "Training", points: 18 },
-    { place: "3rd", person: "Diana Lee", event: "Webinar", points: 25 },
-  ]);
-  const [card3Data, setCard3Data] = useState<Row[]>([
-    { place: "1st", person: "Eve Garcia", event: "Panel", points: 14 },
-    { place: "2nd", person: "Frank Miller", event: "Networking", points: 16 },
-    { place: "3rd", person: "Grace Taylor", event: "Expo", points: 22 },
-  ]);
-  const [card4Data, setCard4Data] = useState<Row[]>([
-    { place: "1st", person: "Helen Davis", event: "Summit", points: 19 },
-    { place: "2nd", person: "Ian Clark", event: "Retreat", points: 21 },
-    { place: "3rd", person: "Julia Adams", event: "Hackathon", points: 17 },
-  ]);
+  const houses = useQuery(api.ranking.getLeaderboard);
+  const addScore = useMutation(api.ranking.addScore);
 
-  const [open1, setOpen1] = useState(false);
-  const [open2, setOpen2] = useState(false);
-  const [open3, setOpen3] = useState(false);
-  const [open4, setOpen4] = useState(false);
-
-  const [newRow1, setNewRow1] = useState<NewRow>({
-    place: "",
-    person: "",
-    event: "",
-    points: "",
-  });
-  const [newRow2, setNewRow2] = useState<NewRow>({
-    place: "",
-    person: "",
-    event: "",
-    points: "",
-  });
-  const [newRow3, setNewRow3] = useState<NewRow>({
-    place: "",
-    person: "",
-    event: "",
-    points: "",
-  });
-  const [newRow4, setNewRow4] = useState<NewRow>({
-    place: "",
-    person: "",
-    event: "",
-    points: "",
-  });
-
-  const total1 = card1Data.reduce((sum, row) => sum + row.points, 0);
-  const total2 = card2Data.reduce((sum, row) => sum + row.points, 0);
-  const total3 = card3Data.reduce((sum, row) => sum + row.points, 0);
-  const total4 = card4Data.reduce((sum, row) => sum + row.points, 0);
-
-  const handleSubmit1 = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (newRow1.place && newRow1.person && newRow1.event && newRow1.points) {
-      setCard1Data([
-        ...card1Data,
-        { ...newRow1, points: parseInt(newRow1.points) || 0 },
-      ]);
-      setNewRow1({ place: "", person: "", event: "", points: "" });
-      setOpen1(false);
-    }
-  };
-
-  const handleSubmit2 = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (newRow2.place && newRow2.person && newRow2.event && newRow2.points) {
-      setCard2Data([
-        ...card2Data,
-        { ...newRow2, points: parseInt(newRow2.points) || 0 },
-      ]);
-      setNewRow2({ place: "", person: "", event: "", points: "" });
-      setOpen2(false);
-    }
-  };
-
-  const handleSubmit3 = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (newRow3.place && newRow3.person && newRow3.event && newRow3.points) {
-      setCard3Data([
-        ...card3Data,
-        { ...newRow3, points: parseInt(newRow3.points) || 0 },
-      ]);
-      setNewRow3({ place: "", person: "", event: "", points: "" });
-      setOpen3(false);
-    }
-  };
-
-  const handleSubmit4 = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (newRow4.place && newRow4.person && newRow4.event && newRow4.points) {
-      setCard4Data([
-        ...card4Data,
-        { ...newRow4, points: parseInt(newRow4.points) || 0 },
-      ]);
-      setNewRow4({ place: "", person: "", event: "", points: "" });
-      setOpen4(false);
-    }
-  };
+  if (!houses) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CardTable
-          title="Card 1"
-          description="Description for Card 1"
-          data={card1Data}
-          setData={setCard1Data}
-          newRow={newRow1}
-          setNewRow={setNewRow1}
-          handleSubmit={handleSubmit1}
-          open={open1}
-          setOpen={setOpen1}
-          total={total1}
-        />
-        <CardTable
-          title="Card 2"
-          description="Description for Card 2"
-          data={card2Data}
-          setData={setCard2Data}
-          newRow={newRow2}
-          setNewRow={setNewRow2}
-          handleSubmit={handleSubmit2}
-          open={open2}
-          setOpen={setOpen2}
-          total={total2}
-        />
-        <CardTable
-          title="Card 3"
-          description="Description for Card 3"
-          data={card3Data}
-          setData={setCard3Data}
-          newRow={newRow3}
-          setNewRow={setNewRow3}
-          handleSubmit={handleSubmit3}
-          open={open3}
-          setOpen={setOpen3}
-          total={total3}
-        />
-        <CardTable
-          title="Card 4"
-          description="Description for Card 4"
-          data={card4Data}
-          setData={setCard4Data}
-          newRow={newRow4}
-          setNewRow={setNewRow4}
-          handleSubmit={handleSubmit4}
-          open={open4}
-          setOpen={setOpen4}
-          total={total4}
-        />
+        {houses.map((house) => (
+          <CardTable
+            key={house._id}
+            houseId={house._id}
+            title={house.name}
+            description={house.description}
+            total={house.totalPoints || 0}
+            addScore={addScore}
+          />
+        ))}
       </div>
     </div>
   );
