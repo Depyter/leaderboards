@@ -1,5 +1,5 @@
-import { ComponentExample } from "@/components/component-example";
+import { Leaderboard } from "@/components/leaderboard";
 
 export default function Page() {
-  return <ComponentExample />;
+  return <Leaderboard />;
 }
