@@ -17,7 +17,16 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
+    advanced: {
+      // This is the "Standard Proxy Config"
+      useSecureCookies: true, // "I am behind a secure proxy"
 
+      defaultCookieAttributes: {
+        sameSite: "None", // Required for Cross-Site (Workers -> Backend)
+        secure: true, // Required for SameSite: None
+        partitioned: true, // Future-proofing
+      },
+    },
     socialProviders: {
       google: {
         prompt: "select_account",
@@ -25,6 +34,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       },
     },
+    trustedOrigins: [
+      "https://leaderboard-frontend.acabalharleyvan.workers.dev",
+    ],
     databaseHooks: {
       user: {
         create: {
