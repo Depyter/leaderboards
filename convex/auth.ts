@@ -42,7 +42,10 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
         create: {
           before: async (user, ctx) => {
             const email = user.email;
-            const allowedEmails = ["acabalharleyvan@gmail.com"];
+            const allowedEmails = [
+              "acabalharleyvan@gmail.com",
+              "cefjumaoas29@gmail.com",
+            ];
 
             if (!allowedEmails.includes(email)) {
               throw new APIError("UNAUTHORIZED", {
