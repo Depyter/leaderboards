@@ -8,6 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-jetbrains);
+  --animate-diamond-in: diamond-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   --font-tungsten: var(--font-tungsten-compressed);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -123,5 +124,27 @@
   }
   body {
     @apply bg-background text-foreground font-sans tracking-tight;
+  }
+}
+
+@keyframes diamond-in {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }

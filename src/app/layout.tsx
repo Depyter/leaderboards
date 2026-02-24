@@ -15,7 +15,33 @@ const geistMono = Geist_Mono({
 });
 
 const tungstenCompressed = localFont({
-  src: "./fonts/tungsten-compressed-bold.woff2",
+  src: [
+    {
+      path: "./fonts/Tungsten-Font/WOFF2/TungstenCompressed-Thin.woff2",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Tungsten-Font/WOFF2/TungstenCompressed-Book.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Tungsten-Font/WOFF2/TungstenCompressed-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Tungsten-Font/WOFF2/TungstenCompressed-Semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Tungsten-Font/WOFF2/TungstenCompressed-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-tungsten-compressed",
 });
 
