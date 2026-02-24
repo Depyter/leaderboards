@@ -8,20 +8,22 @@ export function Leaderboard() {
 
   if (!houses) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center overflow-hidden">
+      <div className="fixed inset-0 flex items-center justify-center overflow-hidden font-tungsten">
+        {/* Loading background — bottom of loading.webp */}
+        <img
+          src="/assets/loading.webp"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none"
+        />
         {/* Dark purple gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0d0520]/80 to-transparent" />
 
         {/* Centered logo */}
         <div className="relative z-10 flex flex-col items-center gap-6">
           <img
-            src="/assets/komsaicup.svg"
+            src="/assets/komsai.webp"
             alt="Komsai Cup"
-            className="w-72 md:w-[480px] animate-pulse"
-            style={{
-              filter:
-                "brightness(0) saturate(100%) invert(45%) sepia(80%) saturate(600%) hue-rotate(220deg) brightness(120%) drop-shadow(0 0 32px #A151DA) drop-shadow(0 0 64px #584EBE)",
-            }}
+            className="w-72 md:w-[480px] animate-in"
           />
         </div>
       </div>
@@ -29,7 +31,7 @@ export function Leaderboard() {
   }
 
   return (
-    <div className="relative w-full h-[1850px] md:h-[2550px] lg:h-[3550px] overflow-hidden">
+    <div className="relative w-full h-[1850px] md:h-[2550px] lg:h-[3550px] overflow-hidden font-tungsten">
       {/* Single consolidated background image — fixed height so sides clip instead of height shrinking */}
       <img
         src="/assets/background.webp"

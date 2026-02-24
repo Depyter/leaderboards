@@ -6,7 +6,7 @@ import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-jetbrains",
 });
 
 const geistMono = Geist_Mono({
@@ -33,7 +33,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={jetbrainsMono.variable}>
+    <html
+      lang="en"
+      className={`${jetbrainsMono.variable} ${tungstenCompressed.variable}`}
+    >
       <body
         className={`${tungstenCompressed.variable} ${geistMono.variable} antialiased`}
       >
