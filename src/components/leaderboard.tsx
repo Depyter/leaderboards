@@ -71,35 +71,55 @@ export function Leaderboard() {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="absolute inset-0"
           >
+            {/* Top header for widescreen */}
+            <div className="hidden lg:flex absolute top-[6%] md:left-32 md:right-32 xl:left-56 xl:right-56 justify-between items-center z-50">
+              <span className="text-white font-tungsten md:text-6xl lg:text-7xl xl:text-8xl font-bold">
+                ONE TEAM. ONE GOAL.
+              </span>
+              <span className="text-white font-tungsten md:text-6xl lg:text-7xl xl:text-8xl font-bold">
+                OUR TIME IS NOW.
+              </span>
+            </div>
+
             {/* 4 diamond boxes in a diamond pattern */}
-            <div className="absolute top-[28.5%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none w-[280px] h-[260px] md:w-[440px] md:h-[440px]">
+            <div className="absolute top-[28.5%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none w-[280px] h-[260px] md:w-[330px] lg:w-[440px] md:h-[330px] lg:h-[440px]">
               {houses.slice(0, 4).map((house, i) => {
                 const positions = [
-                  "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-5 md:-translate-y-13",
+                  "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-5 md:-translate-y-9 lg:-translate-y-13",
                   "absolute top-1/2 left-0 -translate-y-1/2",
                   "absolute top-1/2 right-0 -translate-y-1/2",
                   "absolute bottom-0 left-1/2 -translate-x-1/2",
                 ];
 
-                const basicSize = "w-26 h-26 md:w-42 md:h-42";
+                const basicSize = "w-26 h-26  lg:w-42 md:h-30 md:w-30 lg:h-42";
                 const backgroundClasses = [
-                  "bg-[url('/assets/1st.png')] w-28 h-28 md:w-52 md:h-52",
+                  "bg-[url('/assets/1st.png')] w-28 h-28 md:h-37 md:w-37 lg:w-52 md:h-37 md:w-37 lg:h-52",
                   `bg-[url('/assets/2nd.png')] ${basicSize}`,
                   `bg-[url('/assets/3rd.png')] ${basicSize}`,
                   `bg-[url('/assets/4th.png')] ${basicSize}`,
                 ];
 
+                const initials = [
+                  { opacity: 0, scale: 0.6, y: "-100%" },
+                  { opacity: 0, scale: 0.6, x: "-100%" },
+                  { opacity: 0, scale: 0.6, x: "100%" },
+                  { opacity: 0, scale: 0.6, y: "100%" },
+                ];
+
+                const tiltAngles = [10, -10, 10, -10];
+
                 return (
                   <motion.div
                     key={house._id}
-                    className={`${positions[i]} ${backgroundClasses[i]} bg-cover bg-center bg-no-repeat flex items-center justify-center`}
+                    className={`${positions[i]} ${backgroundClasses[i]} bg-cover bg-center bg-no-repeat flex items-center justify-center cursor-pointer`}
                     style={{ rotate: 45 }}
-                    initial={{ opacity: 0, scale: 0.6 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={initials[i]}
+                    animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                    whileHover={{ rotate: 45 + tiltAngles[i], scale: 1.08 }}
                     transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 20,
+                      type: "tween",
+                      ease: "easeOut",
+                      duration: 0.3,
                       delay: 0.3 + i * 0.15,
                     }}
                   >
@@ -128,8 +148,8 @@ export function Leaderboard() {
             {/* Standings content */}
             <div className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-25 w-60 md:w-90 lg:w-134 pointer-events-none">
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <span className="text-4xl lg:text-[90px] font-bold uppercase text-white tracking-wide">
+                <div className="flex flex-col gap-2 items-center">
+                  <span className="text-center font-dinnext text-2xl lg:text-6xl font-bold uppercase tracking-tighter text-white max-w-[11ch]">
                     support your bias!
                   </span>
                   <img
@@ -137,7 +157,7 @@ export function Leaderboard() {
                     alt="Komsai Cup"
                     className="w-full"
                   />
-                  <span className="text-xl md:text-[40px] font-bold uppercase tracking-wide text-white">
+                  <span className="font-dinnext text-xl md:text-[40px] font-bold uppercase text-white">
                     Day 1 game day tally
                   </span>
                 </div>
@@ -145,21 +165,22 @@ export function Leaderboard() {
                 {houses.slice(0, 4).map((house, i) => (
                   <motion.div
                     key={house._id}
-                    className="w-full h-12 md:h-16 lg:h-28 flex items-center justify-center text-black relative overflow-hidden bg-white"
+                    className="font-dinnext w-full h-12 md:h-16 lg:h-22 flex items-center justify-center text-black relative overflow-hidden bg-white"
                     initial={{ opacity: 0, x: -24 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     transition={{
                       duration: 0.5,
                       ease: "easeOut",
                       delay: i * 0.1,
                     }}
+                    viewport={{ once: true }}
                   >
                     <div
                       className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
                       style={{ backgroundImage: "url('/assets/texture.png')" }}
                     />
-                    <div className="relative z-10 flex items-center w-full px-4 md:px-6 lg:px-10 gap-3 md:gap-4 lg:gap-8">
-                      <span className="text-2xl md:text-4xl lg:text-6xl font-bold text-[#A151DA] shrink-0">
+                    <div className="relative z-10 flex items-center w-full px-4 md:px-6 lg:px-10 gap-3 lg:gap-5">
+                      <span className="text-lg md:text-2xl lg:text-3xl font-bold text-[#A151DA] shrink-0">
                         {String(houses.indexOf(house) + 1).padStart(2, "0")}
                       </span>
                       <img
@@ -167,10 +188,10 @@ export function Leaderboard() {
                         alt={house.name}
                         className="w-10 h-10 md:w-15 md:h-15 lg:w-20 lg:h-20 shrink-0"
                       />
-                      <span className="text-xl md:text-3xl lg:text-5xl font-bold uppercase tracking-wide flex-1 truncate text-[#584EBE]">
+                      <span className="text-xs md:text-lg lg:text-xl font-bold uppercase tracking-wide flex-1 truncate text-[#584EBE]">
                         {house.name}
                       </span>
-                      <span className="text-xl md:text-3xl lg:text-5xl font-bold shrink-0 text-[#584EBE]">
+                      <span className="text-xs md:text-lg lg:text-2xl font-bold shrink-0 text-[#584EBE]">
                         {house.totalPoints}
                       </span>
                       <img
@@ -192,7 +213,7 @@ export function Leaderboard() {
               {/* Marquee strip */}
               <div className="overflow-hidden py-1 flex mt-3">
                 <motion.div
-                  className="flex shrink-0 gap-6 pr-6 items-center font-tungsten text-white font-bold text-xl md:text-2xl tracking-widest uppercase whitespace-nowrap"
+                  className="flex shrink-0 gap-6 pr-6 items-center text-white font-bold text-xl md:text-2xl tracking-widest uppercase whitespace-nowrap"
                   animate={{ x: ["0%", "-50%"] }}
                   transition={{
                     duration: 18,
@@ -213,44 +234,47 @@ export function Leaderboard() {
                 </motion.div>
               </div>
 
-              {/* Credits row — stacks on mobile, side-by-side on md+ */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0 py-4 md:py-6 mt-4 mb-4">
-                {/* Left credits */}
-                <div className="flex flex-col gap-2 pl-20">
-                  {/* Logos + tagline */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <img
-                      src="/assets/upcsg.png"
-                      alt="UPCSG"
-                      className="h-14 w-auto object-contain"
-                    />
-                    <div className="w-[3px] self-stretch bg-white" />
-                    <img
-                      src="/assets/30years.png"
-                      alt="30 Years"
-                      className="h-14 w-auto object-contain"
-                    />
-                    <div className="flex flex-col justify-center text-white font-tungsten leading-none tracking-wide w-max">
-                      <span
-                        className="block w-full text-4xl font-bold uppercase"
-                        style={{
-                          textAlign: "justify",
-                          textAlignLast: "justify",
-                        }}
-                      >
-                        Always B3Y0ND The Code:
-                      </span>
-                      <span className="block w-full text-lg font-semibold uppercase -mt-3">
-                        Celebrating 30++ Years of Transcending Excellence
-                      </span>
-                    </div>
-                  </div>
+              {/* Logo row */}
+              <div className="flex items-center gap-3 pt-4 pl-4 md:pl-20">
+                <img
+                  src="/assets/upcsg.png"
+                  alt="UPCSG"
+                  className="h-10 md:h-14 w-auto object-contain"
+                />
+                <div className="w-[3px] self-stretch bg-white" />
+                <img
+                  src="/assets/30years.png"
+                  alt="30 Years"
+                  className="h-10 md:h-14 w-auto object-contain"
+                />
+                <div className="flex flex-col justify-center items-center text-white font-dinnext leading-none tracking-wide w-max">
+                  <span
+                    className="block w-full text-4xl md:text-6xl font-bold font-tungsten uppercase"
+                    style={{
+                      textAlign: "justify",
+                      textAlignLast: "justify",
+                    }}
+                  >
+                    Always B3Y0ND The Code:
+                  </span>
+                  <span className="font-dinnext tracking-tighter block w-full text-[7px] md:text-xs font-bold uppercase -mt-2 md:-mt-3">
+                    Celebrating 30++ Years of Transcending Excellence
+                  </span>
+                </div>
+              </div>
 
+              {/* Credits row — side-by-side always */}
+              <div className="flex flex-row items-start justify-between gap-4 py-4 md:py-6  mb-4">
+                {/* Left credits */}
+                <div className="flex flex-col gap-2 pl-4 md:pl-20 flex-1">
                   {/* Credits text */}
-                  <div className="text-white font-tungsten text-2xl md:text-4xl leading-7 tracking-wide">
+                  <div className="text-white font-dinnext text-xs md:text-lg lg:text-xl  ">
                     <p className="font-bold">
                       Development by:{" "}
-                      <span className="font-medium"> Harley Acabal</span>
+                      <span className="font-medium">
+                        {" "}
+                        <a href="https://harleyvan.com">Harley Acabal</a>
+                      </span>
                     </p>
                     <p className="font-bold">
                       Web Design by:{" "}
@@ -267,7 +291,7 @@ export function Leaderboard() {
                 </div>
 
                 {/* Right credits */}
-                <div className="text-white font-tungsten text-2xl md:text-4xl leading-tight tracking-wide md:text-right pl-20 md:pr-20">
+                <div className="text-white font-dinnext text-xs md:text-lg lg:text-xl  text-right pr-4 md:pr-20 flex-1">
                   <p className="font-bold">
                     Official Mascots Illustrations by:
                   </p>

@@ -10,6 +10,7 @@
   --font-sans: var(--font-jetbrains);
   --animate-diamond-in: diamond-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   --font-tungsten: var(--font-tungsten-compressed);
+  --font-dinnext: var(--font-dinnext);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
