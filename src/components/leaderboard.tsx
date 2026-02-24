@@ -40,178 +40,125 @@ export function Leaderboard() {
   const remaining = houses.slice(3);
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
-      <div className="text-center mb-12">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <Trophy className="w-12 h-12 text-yellow-500 animate-pulse" />
-          <h1 className="text-6xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            House Rankings
-          </h1>
-          <Trophy className="w-12 h-12 text-yellow-500 animate-pulse" />
-        </div>
-        <p className="text-xl text-muted-foreground">
-          Current standings for Komsai Week
-        </p>
-      </div>
+    <div className="relative">
+      {/* Background image — top of page only, no repeat, horizontally centered on all viewports */}
+      <div
+        className="w-full md:aspect-[1240/1761] bg-no-repeat bg-cover bg-center aspect-500/1440 pointer-events-none"
+        style={{
+          backgroundImage: "url('/assets/Background.png')",
+          backgroundPosition: "center top",
+        }}
+      />
+      {/* Foreground image — positioned 420px from top, above background, fixed size and centered */}
+      <div className="absolute top-[250px] z-10 pointer-events-none w-full">
+        <div className="relative">
+          <img
+            src="/assets/Foreground.png"
+            alt="Foreground"
+            className="w-full h-[1440px] md:h-full object-cover object-center"
+          />
+          {/* 4 diamond boxes in a diamond pattern — 1st top, 2nd left, 3rd right, 4th bottom */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-8/10 z-30 w-[280px] h-[260px] md:w-[440px] md:h-[440px]">
+            {houses.slice(0, 4).map((house, i) => {
+              const positions = [
+                "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-5 md:-translate-y-13", // 1st — top
+                "absolute top-1/2 left-0 -translate-y-1/2", // 2nd — left
+                "absolute top-1/2 right-0 -translate-y-1/2", // 3rd — right
+                "absolute bottom-0 left-1/2 -translate-x-1/2", // 4th — bottom
+              ];
 
-      {/* Podium - Top 3 */}
-      <div className="flex items-end justify-center gap-6 mb-16 flex-wrap md:flex-nowrap">
-        {/* 2nd Place - Left */}
-        {secondPlace && (
-          <Card
-            className="w-full md:w-64 border-4 border-gray-400 shadow-xl hover:shadow-2xl transition-all animate-in zoom-in"
-            style={{ animationDelay: "100ms" }}
-          >
-            <CardHeader className="text-center pb-4">
-              <div className="flex justify-center mb-3">
-                <div className="relative">
-                  <Medal className="w-16 h-16 text-gray-400" />
-                  <Badge className="absolute -top-2 -right-2 bg-gray-400 hover:bg-gray-500 text-white">
-                    2nd
-                  </Badge>
-                </div>
-              </div>
-              <CardTitle className="text-2xl">{secondPlace.name}</CardTitle>
-              <CardDescription className="text-sm">
-                {secondPlace.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center pt-6 pb-6">
-              <div className="text-5xl font-bold text-gray-500 mb-2">
-                {secondPlace.totalPoints}
-              </div>
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">
-                points
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 1st Place - Center (Bigger) */}
-        {firstPlace && (
-          <Card
-            className="w-full md:w-80 border-4 border-yellow-500 shadow-2xl hover:shadow-3xl transition-all animate-in zoom-in"
-            style={{ animationDelay: "0ms" }}
-          >
-            <CardHeader className="text-center pb-4">
-              <div className="flex justify-center mb-3">
-                <div className="relative">
-                  <Crown className="w-20 h-20 text-yellow-500 animate-pulse" />
-                  <Badge className="absolute -top-2 -right-2 bg-yellow-500 hover:bg-yellow-600 text-white">
-                    1st
-                  </Badge>
-                </div>
-              </div>
-              <CardTitle className="text-3xl font-bold">
-                {firstPlace.name}
-              </CardTitle>
-              <CardDescription className="text-base">
-                {firstPlace.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center pt-8 pb-8">
-              <div className="text-7xl font-bold bg-linear-to-br from-yellow-500 to-yellow-600 bg-clip-text text-transparent mb-3">
-                {firstPlace.totalPoints}
-              </div>
-              <p className="text-base text-muted-foreground uppercase tracking-wide font-semibold">
-                points
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 3rd Place - Right */}
-        {thirdPlace && (
-          <Card
-            className="w-full md:w-64 border-4 border-amber-700 shadow-xl hover:shadow-2xl transition-all animate-in zoom-in"
-            style={{ animationDelay: "200ms" }}
-          >
-            <CardHeader className="text-center pb-4">
-              <div className="flex justify-center mb-3">
-                <div className="relative">
-                  <Award className="w-16 h-16 text-amber-700" />
-                  <Badge className="absolute -top-2 -right-2 bg-amber-700 hover:bg-amber-800 text-white">
-                    3rd
-                  </Badge>
-                </div>
-              </div>
-              <CardTitle className="text-2xl">{thirdPlace.name}</CardTitle>
-              <CardDescription className="text-sm">
-                {thirdPlace.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center pt-6 pb-6">
-              <div className="text-5xl font-bold text-amber-700 mb-2">
-                {thirdPlace.totalPoints}
-              </div>
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">
-                points
-              </p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* 4th Place and Below - Table */}
-      {remaining.length > 0 && (
-        <div className="border-2 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-24 text-center">Rank</TableHead>
-                <TableHead>House Name</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Description
-                </TableHead>
-                <TableHead className="text-right">Points</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {remaining.map((house, index) => (
-                <TableRow
+              const basicSize = "w-26 h-26 md:w-42 md:h-42";
+              const backgroundClasses = [
+                "bg-[url('/assets/1st.png')] w-28 h-28 md:w-52 md:h-52 ",
+                `bg-[url('/assets/2nd.png')] ${basicSize}`,
+                `bg-[url('/assets/3rd.png')] ${basicSize}`,
+                `bg-[url('/assets/4th.png')] ${basicSize}`,
+              ];
+              return (
+                <div
                   key={house._id}
-                  className="hover:bg-muted/50 transition-colors"
+                  className={`${positions[i]} ${backgroundClasses[i]} rotate-45 bg-cover bg-center bg-no-repeat flex items-center justify-center`}
                 >
-                  <TableCell className="text-center">
-                    <Badge variant="outline" className="font-semibold">
-                      {index + 4}th
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-semibold text-lg">
-                    {house.name}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground hidden md:table-cell">
-                    {house.description}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex flex-col items-end">
-                      <span className="text-2xl font-bold text-primary">
-                        {house.totalPoints}
-                      </span>
-                      <span className="text-xs text-muted-foreground uppercase">
-                        points
-                      </span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                  <div
+                    className={`-rotate-45 flex ${
+                      i === 0
+                        ? "w-3/5 h-3/5 items-end justify-center"
+                        : i === 1
+                          ? "w-5/10 h-5/10 items-center justify-end"
+                          : i === 2
+                            ? "w-5/10 h-5/10 items-center justify-start"
+                            : "w-5/10 h-5/10 items-start justify-center"
+                    }`}
+                  >
+                    <img
+                      src={`/assets/houses/${house.name}.svg`}
+                      alt={house.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      )}
-
-      {/* Empty State */}
-      {houses.length === 0 && (
-        <Card className="border-2">
-          <CardContent className="text-center py-12">
-            <Trophy className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No Houses Yet</h3>
-            <p className="text-muted-foreground">
-              The competition hasn&apos;t started yet. Check back soon!
-            </p>
-          </CardContent>
-        </Card>
-      )}
+        {/* Standings image — overlapping bottom of foreground */}
+        <div className="absolute top-[250px] md:top-[-100px] left-0 z-20 w-full pointer-events-none">
+          <img
+            src="/assets/standings.png"
+            alt="Standings"
+            className="w-full h-[1440px] md:h-full object-cover object-center"
+          />
+          <div className="absolute top-[70%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-25 w-60 md:w-90 lg:w-134">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-4xl lg:text-[90px] font-semibold uppercase text-white">
+                  support your bias!
+                </span>
+                <img
+                  src="/assets/komsaicup.svg"
+                  alt="Komsai Cup"
+                  className="w-full"
+                />
+                <span className="text-xl md:text-[40px] font-bold uppercase tracking-wide text-white">
+                  Day 1 game day tally
+                </span>
+              </div>
+              {houses.slice(0, 4).map((house) => (
+                <div
+                  key={house._id}
+                  className="w-full h-12 md:h-16 lg:h-28 flex items-center justify-center text-black relative overflow-hidden bg-white"
+                >
+                  <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
+                    style={{ backgroundImage: "url('/assets/texture.png')" }}
+                  />
+                  <div className="relative z-10 flex items-center w-full px-4 md:px-6 lg:px-10 gap-3 md:gap-4 lg:gap-8">
+                    <span className="text-2xl md:text-4xl lg:text-6xl font-bold text-[#A151DA] shrink-0">
+                      {String(houses.indexOf(house) + 1).padStart(2, "0")}
+                    </span>
+                    <img
+                      src={`/assets/houses/purple/${house.name}.svg`}
+                      alt={house.name}
+                      className="w-10 h-10 md:w-15 md:h-15 lg:w-20 lg:h-20 shrink-0 "
+                    />
+                    <span className="text-xl md:text-3xl lg:text-5xl font-bold uppercase tracking-wide flex-1 truncate text-[#584EBE]">
+                      {house.name}
+                    </span>
+                    <span className="text-xl md:text-3xl lg:text-5xl font-bold shrink-0 text-[#584EBE]">
+                      {house.totalPoints}
+                    </span>
+                    <img
+                      src="/assets/star.svg"
+                      alt="star"
+                      className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 shrink-0"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

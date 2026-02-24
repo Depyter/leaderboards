@@ -44,6 +44,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
             const email = user.email;
             const allowedEmails = [
               "acabalharleyvan@gmail.com",
+              "haacabal@up.edu.ph",
               "cefjumaoas29@gmail.com",
             ];
 

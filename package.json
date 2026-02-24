@@ -40,6 +40,7 @@
     "@types/node": "^24.10.4",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
+    "baseline-browser-mapping": "^2.10.0",
     "eslint": "^9.39.1",
     "eslint-config-next": "16.0.10",
     "npm-run-all2": "^8.0.4",
