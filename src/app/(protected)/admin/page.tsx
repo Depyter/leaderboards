@@ -33,7 +33,9 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -65,20 +67,22 @@ function CardTable({
     place: "",
     event: "",
     points: "",
+    day: "",
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newRow.place && newRow.event && newRow.points) {
+    if (newRow.place && newRow.event && newRow.points && newRow.day) {
       setIsSubmitting(true);
       try {
         await addScore({
           house: houseId,
           place: newRow.place as "1st" | "2nd" | "3rd" | "4th",
+          day: parseInt(newRow.day) as 1 | 2 | 3 | 4 | 5,
           event: newRow.event,
           points: parseInt(newRow.points) || 0,
         });
-        setNewRow({ place: "", event: "", points: "" });
+        setNewRow({ place: "", event: "", points: "", day: "" });
         setOpen(false);
       } finally {
         setIsSubmitting(false);
@@ -103,6 +107,7 @@ function CardTable({
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Day</TableHead>
                 <TableHead>Place</TableHead>
                 <TableHead>User</TableHead>
                 <TableHead>Event</TableHead>
@@ -112,6 +117,7 @@ function CardTable({
             <TableBody>
               {results.map((action, index) => (
                 <TableRow key={index}>
+                  <TableCell>{action.day}</TableCell>
                   <TableCell>{action.place}</TableCell>
                   <TableCell>{action.user}</TableCell>
                   <TableCell>{action.event}</TableCell>
@@ -139,6 +145,27 @@ function CardTable({
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Field>
+                <FieldLabel>Day</FieldLabel>
+                <Select
+                  value={newRow.day}
+                  onValueChange={(value) =>
+                    setNewRow({ ...newRow, day: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select day" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              <Field>
                 <FieldLabel>Place</FieldLabel>
                 <Select
                   value={newRow.place}
@@ -160,13 +187,46 @@ function CardTable({
 
               <Field>
                 <FieldLabel>Event</FieldLabel>
-                <Input
+                <Select
                   value={newRow.event}
-                  onChange={(e) =>
-                    setNewRow({ ...newRow, event: e.target.value })
+                  onValueChange={(value) =>
+                    setNewRow({ ...newRow, event: value })
                   }
-                  placeholder="Event name"
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select event" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="Mx Komsai">Mx Komsai</SelectItem>
+                      <SelectLabel>Sports</SelectLabel>
+                      <SelectItem value="Men's Basketball">
+                        Men&apos;s Basketball
+                      </SelectItem>
+                      <SelectItem value="Women's Basketball">
+                        Women&apos;s Basketball
+                      </SelectItem>
+                      <SelectItem value="Frisbee">Frisbee</SelectItem>
+                      <SelectItem value="Volleyball">Volleyball</SelectItem>
+                      <SelectItem value="Badminton">Badminton</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>Esports</SelectLabel>
+                      <SelectItem value="Valorant">Valorant</SelectItem>
+                      <SelectItem value="Mobile Legends">
+                        Mobile Legends
+                      </SelectItem>
+                      <SelectItem value="Tekken">Tekken</SelectItem>
+                      <SelectItem value="Tetris">Tetris</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>Board Games</SelectLabel>
+                      <SelectItem value="Chess">Chess</SelectItem>
+                      <SelectItem value="Scrabble">Scrabble</SelectItem>
+                      <SelectItem value="Rubiks Cube">Rubiks Cube</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </Field>
               <Field>
                 <FieldLabel>Points</FieldLabel>

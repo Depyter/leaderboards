@@ -20,6 +20,13 @@ export default defineSchema({
       v.literal("3rd"),
       v.literal("4th"),
     ),
+    day: v.union(
+      v.literal(1),
+      v.literal(2),
+      v.literal(3),
+      v.literal(4),
+      v.literal(5),
+    ),
     event: v.string(),
     points: v.number(),
     createdAt: v.number(),

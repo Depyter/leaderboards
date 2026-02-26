@@ -34,9 +34,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       },
     },
-    trustedOrigins: [
-      "https://leaderboard-frontend.acabalharleyvan.workers.dev",
-    ],
+    trustedOrigins: ["https://komsaicup.harleyvan.com"],
     databaseHooks: {
       user: {
         create: {
@@ -45,6 +43,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
             const allowedEmails = [
               "acabalharleyvan@gmail.com",
               "haacabal@up.edu.ph",
+              "cmllamas@up.edu.ph",
+              "emcaliskis@up.edu.ph",
+              "jpty@up.edu.ph",
               "cefjumaoas29@gmail.com",
             ];
 

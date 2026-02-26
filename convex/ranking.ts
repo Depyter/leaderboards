@@ -2,6 +2,13 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { authComponent } from "./auth";
 
+export const getAllActions = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("action").collect();
+  },
+});
+
 export const getLeaderboard = query({
   args: {},
   handler: async (ctx) => {
@@ -41,6 +48,13 @@ export const addScore = mutation({
       v.literal("3rd"),
       v.literal("4th"),
     ),
+    day: v.union(
+      v.literal(1),
+      v.literal(2),
+      v.literal(3),
+      v.literal(4),
+      v.literal(5),
+    ),
     event: v.string(),
     points: v.number(),
   },
@@ -51,6 +65,7 @@ export const addScore = mutation({
       house: args.house,
       user: betterAuthUser.name,
       place: args.place,
+      day: args.day,
       event: args.event,
       points: args.points,
       createdAt: Date.now(),
