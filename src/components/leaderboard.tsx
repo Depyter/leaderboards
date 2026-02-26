@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export function Leaderboard() {
   const houses = useQuery(api.ranking.getLeaderboard);
@@ -149,16 +150,13 @@ export function Leaderboard() {
             <div className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-25 w-60 md:w-90 lg:w-134 pointer-events-none">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2 items-center">
-                  <span className="text-center font-dinnext text-2xl lg:text-6xl font-bold uppercase tracking-tighter text-white max-w-[11ch]">
-                    support your bias!
-                  </span>
                   <img
                     src="/assets/komsaicup.svg"
                     alt="Komsai Cup"
                     className="w-full"
                   />
-                  <span className="font-dinnext text-xl md:text-[40px] font-bold uppercase text-white">
-                    Day 1 game day tally
+                  <span className="text-center font-dinnext text-2xl lg:text-4xl font-bold uppercase tracking-tighter text-white">
+                    support your bias!
                   </span>
                 </div>
 
@@ -202,6 +200,30 @@ export function Leaderboard() {
                     </div>
                   </motion.div>
                 ))}
+
+                <div className="flex justify-center pointer-events-auto">
+                  <motion.div
+                    className="relative"
+                    initial="rest"
+                    whileHover="hover"
+                    animate="rest"
+                  >
+                    <Link
+                      href="/breakdown"
+                      className="font-dinnext text-xl md:text-3xl font-bold uppercase text-white"
+                    >
+                      View Breakdown
+                    </Link>
+                    <motion.span
+                      className="absolute left-0 bottom-0 h-[3px] md:h-[5px] bg-white block"
+                      variants={{
+                        rest: { width: "0%" },
+                        hover: { width: "100%" },
+                      }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                    />
+                  </motion.div>
+                </div>
               </div>
             </div>
 
