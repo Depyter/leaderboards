@@ -61,20 +61,46 @@ export const addScore = mutation({
   handler: async (ctx, args) => {
     const betterAuthUser = await authComponent.getAuthUser(ctx);
 
-    await ctx.db.insert("action", {
-      house: args.house,
-      user: betterAuthUser.name,
-      place: args.place,
-      day: args.day,
-      event: args.event,
-      points: args.points,
-      createdAt: Date.now(),
-    });
+    const existing = await ctx.db
+      .query("action")
+      .withIndex("by_house", (q) => q.eq("house", args.house))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("event"), args.event),
+          q.eq(q.field("day"), args.day),
+        ),
+      )
+      .first();
 
     const house = await ctx.db.get(args.house);
 
-    await ctx.db.patch("house", args.house, {
-      totalPoints: house!.totalPoints + args.points,
-    });
+    if (existing) {
+      const pointsDiff = args.points - existing.points;
+
+      await ctx.db.patch(existing._id, {
+        user: betterAuthUser.name,
+        place: args.place,
+        points: args.points,
+        createdAt: Date.now(),
+      });
+
+      await ctx.db.patch("house", args.house, {
+        totalPoints: house!.totalPoints + pointsDiff,
+      });
+    } else {
+      await ctx.db.insert("action", {
+        house: args.house,
+        user: betterAuthUser.name,
+        place: args.place,
+        day: args.day,
+        event: args.event,
+        points: args.points,
+        createdAt: Date.now(),
+      });
+
+      await ctx.db.patch("house", args.house, {
+        totalPoints: house!.totalPoints + args.points,
+      });
+    }
   },
 });
