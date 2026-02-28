@@ -10,7 +10,9 @@
 
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as push from "../push.js";
 import type * as ranking from "../ranking.js";
+import type * as subscriptions from "../subscriptions.js";
 
 import type {
   ApiFromModules,
@@ -21,7 +23,9 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
+  push: typeof push;
   ranking: typeof ranking;
+  subscriptions: typeof subscriptions;
 }>;
 
 /**
