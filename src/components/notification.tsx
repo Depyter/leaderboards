@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { BellIcon, BellOffIcon } from "lucide-react";
@@ -27,9 +27,22 @@ function urlBase64ToUint8Array(base64String: string) {
 type Status = "checking" | "idle" | "subscribed" | "denied";
 type ResyncStatus = "idle" | "resyncing" | "failed";
 
+interface NotificationContextValue {
+  status: Status;
+  loading: boolean;
+  subscribe: () => Promise<void>;
+  unsubscribe: () => Promise<void>;
+}
+
+const NotificationContext = createContext<NotificationContextValue | null>(
+  null,
+);
+
 // ── Shared subscription hook ──────────────────────────────────────────────────
 
 function useNotificationSubscription() {
+  const context = useContext(NotificationContext);
+
   const saveSubscription = useMutation(api.subscriptions.save);
   const removeSubscription = useMutation(api.subscriptions.removeByEndpoint);
 
@@ -72,12 +85,9 @@ function useNotificationSubscription() {
       return "idle";
     }
 
-    if (convexSub === undefined) return "checking";
-    if (convexSub !== null) return "subscribed";
-
-    if (resyncStatus === "resyncing") return "checking";
-    return "idle";
-  }, [browserEndpoint, convexSub, resyncStatus]);
+    // If browser has endpoint, we're subscribed (even if Convex hasn't synced yet)
+    return "subscribed";
+  }, [browserEndpoint]);
 
   // Step 4: Auto-resync if browser has sub but Convex doesn't
   useEffect(() => {
@@ -153,7 +163,24 @@ function useNotificationSubscription() {
     }
   };
 
-  return { status, loading, subscribe, unsubscribe };
+  const localValue = { status, loading, subscribe, unsubscribe };
+
+  return context || localValue;
+}
+
+// ── NotificationProvider — shares state between components ──────────────────
+
+export function NotificationProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const value = useNotificationSubscription();
+  return (
+    <NotificationContext.Provider value={value}>
+      {children}
+    </NotificationContext.Provider>
+  );
 }
 
 // ── Shared dialog content ─────────────────────────────────────────────────────
@@ -272,12 +299,12 @@ export default function NotificationPrompt() {
     useNotificationSubscription();
   const [open, setOpen] = useState(false);
 
-  // Auto-show after 800ms when idle and not dismissed
+  // Auto-show after 1300ms when idle and not dismissed
   useEffect(() => {
     if (status !== "idle") return;
     const dismissed = localStorage.getItem("notification-prompt-dismissed");
     if (dismissed) return;
-    const timer = setTimeout(() => setOpen(true), 1000);
+    const timer = setTimeout(() => setOpen(true), 1300);
     return () => clearTimeout(timer);
   }, [status]);
 

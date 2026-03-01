@@ -1,5 +1,10 @@
 import { Leaderboard } from "@/components/leaderboard";
+import { NotificationProvider } from "@/components/notification";
 
 export default function Page() {
-  return <Leaderboard />;
+  return (
+    <NotificationProvider>
+      <Leaderboard />
+    </NotificationProvider>
+  );
 }

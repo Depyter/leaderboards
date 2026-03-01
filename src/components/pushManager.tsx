@@ -336,7 +336,7 @@ export default function NotificationSender() {
 
     if (notifType === "standings") {
       const top = houses[0];
-      const title = "📊 Current Standings";
+      const title = "Current Standings";
       const standing = houses
         .slice(0, 4)
         .map((h, i) => `${i + 1}. ${h.name} (${h.totalPoints} pts)`)
@@ -356,7 +356,7 @@ export default function NotificationSender() {
       : "Event Results";
     const body =
       house && eventResult.place && eventResult.event
-        ? `${house.name} takes ${eventResult.place} place in ${eventResult.event}!${eventResult.day ? ` (Day ${eventResult.day})` : ""} Check the leaderboard for updated standings.`
+        ? `${house.name.charAt(0).toUpperCase() + house.name.slice(1)} takes ${eventResult.place} place in ${eventResult.event}!${eventResult.day ? ` (Day ${eventResult.day})` : ""} Check the leaderboard for updated standings.`
         : "New results are in — check the leaderboard!";
     return { title, body, tag: "results" };
   }, [notifType, custom, standingsNote, eventResult, houses]);

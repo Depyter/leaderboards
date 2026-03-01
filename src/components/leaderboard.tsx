@@ -5,7 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { NotificationSettings } from "./notification";
+import NotificationPrompt, { NotificationSettings } from "./notification";
 
 export function Leaderboard() {
   const houses = useQuery(api.ranking.getLeaderboard);
@@ -222,6 +222,7 @@ export function Leaderboard() {
                     />
                   </motion.div>
                   <NotificationSettings />
+                  <NotificationPrompt />
                 </div>
               </div>
             </div>
