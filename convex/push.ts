@@ -13,6 +13,9 @@ export const sendAll = action({
     tag: v.union(v.literal("reminders"), v.literal("results")),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) throw new Error("Unauthorized, please sign in.");
+
     setVapidDetails(
       process.env.VAPID_SUBJECT!,
       process.env.VAPID_PUBLIC_KEY!,

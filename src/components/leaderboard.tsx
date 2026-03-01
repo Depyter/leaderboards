@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { NotificationSettings } from "./notification";
 
 export function Leaderboard() {
   const houses = useQuery(api.ranking.getLeaderboard);
@@ -173,10 +174,7 @@ export function Leaderboard() {
                     }}
                     viewport={{ once: true }}
                   >
-                    <div
-                      className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
-                      style={{ backgroundImage: "url('/assets/texture.png')" }}
-                    />
+                    <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" />
                     <div className="relative z-10 flex items-center w-full px-4 md:px-6 lg:px-10 gap-3 lg:gap-5">
                       <span className="text-lg md:text-2xl lg:text-3xl font-bold text-[#A151DA] shrink-0">
                         {String(houses.indexOf(house) + 1).padStart(2, "0")}
@@ -201,7 +199,7 @@ export function Leaderboard() {
                   </motion.div>
                 ))}
 
-                <div className="flex justify-center pointer-events-auto">
+                <div className="flex flex-col gap-4 justify-center items-center pointer-events-auto">
                   <motion.div
                     className="relative"
                     initial="rest"
@@ -223,6 +221,7 @@ export function Leaderboard() {
                       transition={{ duration: 0.3, ease: "easeOut" }}
                     />
                   </motion.div>
+                  <NotificationSettings />
                 </div>
               </div>
             </div>

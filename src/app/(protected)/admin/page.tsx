@@ -39,6 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import NotificationSender from "@/components/pushManager";
 
 interface CardTableProps {
   houseId: Id<"house">;
@@ -261,7 +262,7 @@ export default function AdminPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {houses.map((house) => (
           <CardTable
             key={house._id}
@@ -272,6 +273,10 @@ export default function AdminPage() {
             addScore={addScore}
           />
         ))}
+      </div>
+
+      <div className="w-full md:max-w-md">
+        <NotificationSender />
       </div>
     </div>
   );
